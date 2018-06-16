@@ -1,0 +1,57 @@
+
+<!-- 横排 -->
+<template name="table">
+  <view class="flex-center flex-column w-100">
+    <view class="flex-center w-100 {{pr}}header_view">
+      <view class="flex-center {{pr}}header_text {{pr}}{{index != content.header.length-1 ? 'header_spliter' : '' }}" wx:for="{{content.header}}" wx:for-item='header' wx:key="" style="width:{{100/content.header.length}}%">{{header}} </view>
+    </view>
+    <block wx:for="{{content.rows}}" wx:for-item="row" wx:key="">
+      <view class="flex-center w-100 {{pr}}row {{pr}}{{index % 2 ? 'row_odd' : 'row_even'}}">
+        <view wx:for="{{row}}" wx:for-item="cell" wx:key="" class="flex-center {{pr}}row-text" style="width:{{100/content.header.length}}%">
+          <navigator url="{{cell.url}}">{{cell.name}}</navigator>
+        </view>
+      </view>
+    </block>
+  </view>
+</template>
+
+<!-- 竖排 -->
+<template name="table-column">
+  <scroll-view scroll-x class="flex-center flex-row w-100" style="white-space:nowrap;">
+    <block wx:for="{{content.cols}}" wx:for-item="col" wx:key="">
+      <!-- 列宽参数: width min-width -->
+      <view class="" style="width:{{col.width?col.width:width}}; min-width:{{min_width?min_width:(100/content.cols.length-1)+'%'}}; display:inline-block;">
+        <view class="flex-center w-100 {{pr}}header_view">
+          <view class="flex-center {{pr}}header_text {{pr}}{{index != content.cols.length-1 ? 'header_spliter' : '' }}">{{col.header}}</view>
+        </view>
+        <view wx:for="{{col.items}}" wx:for-item="cell" wx:key="" class="flex-center w-100 {{pr}}row {{pr}}{{index % 2 ? 'row_even' : 'row_odd'}}">
+          <navigator class="{{pr}}row-text" url="{{cell.url}}">{{cell.name}}</navigator>
+        </view>
+      </view>
+    </block>
+  </scroll-view>
+</template>
+
+<!--
+<scroll-view scroll-x style="width: 100%; background-color: #fff; border-radius:20rpx;height:260rpx; margin:10rpx; white-space:nowrap;">
+    <view wx:for="{{[1,1,1,1,1,1]}}" wx:key='unique' style="height:260rpx;width:235rpx;display:inline-block;">
+      <view class="flex-column flex-center">
+        <navigator url="/pages/cookbook/cookbook" open-type="navigate" style="width:200rpx; height:200rpx; margin: 10rpx;">
+        <image src="/images/food.jpg" style="width:200rpx; height:200rpx;"/>
+        </navigator>
+        <text style="font-size:28rpx; color:#5b5b5b">鸡翅的做法</text>
+      </view>
+    </view>
+  </scroll-view>
+-->
+
+<!-- 
+    <view wx:for="{{recipes}}" wx:for-item='recipe' wx:key='day' class="flex-column flex-center flex-between" style='width:14%;'>
+      <view class="flex-center w-100" style='height: 90rpx; font-size:28rpx; background-color:#33BB77; color:white;'>
+        <text style='width:100%; text-align:center;border-right:1rpx solid {{recipe.day!="周日" ? "#fffa":"#fff0"}};'>{{recipe.day}}</text>
+      </view>
+      <block wx:for="{{[0,1,2,3,4]}}" wx:key="" wx:for-item="index">
+        <view class="flex-center mr20 ml20 w-100" style="color: #4a4a4a;font-size:20rpx; height: 90rpx; background-color:{{index % 2 ? '#eee' : 'white'}};">{{recipe.lunch[index]}}</view>
+      </block>
+    </view>
+-->

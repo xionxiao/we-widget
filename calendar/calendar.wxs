@@ -1,0 +1,21 @@
+var date = getDate()
+var DAY_OF_WEEK = ['日', '一', '二', '三', '四', '五', '六']
+var month = date.getMonth() + 1
+var day = date.getDate()
+var dayOfWeek = date.getDay()
+var hour = date.getHours()
+var year = date.getFullYear()
+var timeOfDay = "早"
+if (hour > 0 && hour < 11)
+  timeOfDay = "早"
+if (hour >= 11 && hour < 14)
+  timeOfDay = "中"
+if (hour >= 14 && hour < 23)
+  timeOfDay = "晚"
+
+module.exports = {
+  dayOfWeek: DAY_OF_WEEK[dayOfWeek],
+  timeOfDay: timeOfDay,
+  formatedDayOfWeek: [month, '月', day, '日', ' 星期', DAY_OF_WEEK[dayOfWeek]].join(''),
+  formatedDateTime: [year, month, day].join('-')
+}
