@@ -9,7 +9,7 @@ var timeOfDay = "早"
 if (hour > 0 && hour < 11)
   timeOfDay = "早"
 if (hour >= 11 && hour < 14)
-  timeOfDay = "中"
+  timeOfDay = "午"
 if (hour >= 14 && hour < 23)
   timeOfDay = "晚"
 

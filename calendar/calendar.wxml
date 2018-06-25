@@ -15,7 +15,7 @@
 <template name="时段">
   <view class="flex-center" style="width:100%; margin:32rpx 0 32rpx 0;">
     <view id="早" bindtap="{{'onTapTimeOfDay'}}" class="btn date{{m.timeOfDay=='早'?'-active':''}}">早餐</view>
-    <view id="中" bindtap="{{'onTapTimeOfDay'}}" class="btn date{{m.timeOfDay=='中'?'-active':''}}">午餐</view>
+    <view id="午" bindtap="{{'onTapTimeOfDay'}}" class="btn date{{m.timeOfDay=='午'?'-active':''}}">午餐</view>
     <view id="晚" bindtap="{{'onTapTimeOfDay'}}" class="btn date{{m.timeOfDay=='晚'?'-active':''}}">晚餐</view>
   </view>
 </template>
