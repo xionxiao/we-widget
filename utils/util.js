@@ -17,7 +17,7 @@ function getDateTime() {
   return {
     dayOfWeek: DAY_OF_WEEK[dayOfWeek],
     timeOfDay: timeOfDay,
-    isoData: [year, month, day].join('-')
+    isoDate: [year, month, day].join('-')
   }
 }
 

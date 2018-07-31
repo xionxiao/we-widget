@@ -44,11 +44,14 @@ function _upload(name, data, filePath, success) {
   })
 }
 
-function authorize(code, iv, data, success) {
+function authorize(code, iv, data, success, app_type, tel, pwd) {
   var payload = {
     'code': code,
     'iv': iv,
-    'encryptedData': data
+    'encryptedData': data,
+    'app': app_type,
+    'tel': tel,
+    'pwd': pwd
   }
   wx.request({
     url: app.globalData.server + '/auth',
@@ -139,6 +142,17 @@ function getStep(name, success, error) {
   }
 }
 
+function getJointTable(payload, success, error) {
+  _post('/joint', payload, res => {
+    console.log('joint', res.data)
+    if (res.data.error) {
+      _safecall(error, res.data)
+    } else {
+      _safecall(success, res.data)
+    }
+  })
+}
+
 module.exports = {
   authorize: authorize,
   getVersion: getVersion,
@@ -146,5 +160,6 @@ module.exports = {
   postBabyInfo: postBabyInfo,
   getMenu: getMenu,
   getStep: getStep,
-  uploadAvatar: uploadAvatar
+  uploadAvatar: uploadAvatar,
+  getJointTable: getJointTable
 }

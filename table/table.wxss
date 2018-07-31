@@ -1,18 +1,18 @@
 .header_view {
-  height: 1.5rem; 
-  font-size:28rpx; 
   background-color:#33BB77; 
-  color:white;
   white-space:nowrap;
-}
-
-.header_text {
-  width:100%; 
   text-align:center;
 }
 
+.header_text {
+  font-size:28rpx;
+  line-height: 1rem;
+  color:white;
+  padding: 0.25rem 0.5rem 0.25rem 0.5rem;
+}
+
 .header_spliter {
-  border-right:1rpx solid #fffa;
+  border-right: 1rpx solid #fffa
 }
 
 .row_odd {
@@ -25,10 +25,18 @@
 
 .row {
   color: #4a4a4a;
-  font-size:22rpx;
-  height: 2.5rem;
 }
 
 .row-text {
   text-align:center;
+  vertical-align: middle;
+  font-size:22rpx;
+  height: 2rem;
+  /*
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: pre-wrap;
+  */
+  overflow: auto;
+  white-space: pre-wrap;
 }

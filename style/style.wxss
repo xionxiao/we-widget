@@ -171,6 +171,14 @@
   border-left: 1px solid #9e9e9e;
 }
 
+.bt {
+  border-top: 1px solid #33bb77;
+}
+
+.bb {
+  border-bottom: 1px solid #33bb77;
+}
+
 .f-24 {
   font-size:24rpx; 
 }
@@ -201,6 +209,10 @@
 
 .text-light {
   color: #9e9e9e;
+}
+
+.text-center {
+  text-align: center;
 }
 
 .bg-white {
