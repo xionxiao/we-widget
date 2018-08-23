@@ -6,7 +6,7 @@ function _page() {
 }
 
 function _safecall(func, param) {
-  typeof(func) == 'function' && func(param)
+  typeof (func) == 'function' && func(param)
 }
 
 function _get(uri, data, success) {
@@ -64,34 +64,20 @@ function _upload(name, data, filePath, success) {
 }
 
 function authorize(app_type, success, error) {
-  wx.login({
-    success: (res) => {
-      if (res.code) {
-        var payload = {
-          'code': res.code,
-          'app': app_type
-        }
-        _post('/auth', payload, res => {
-          console.log('auth', res.data)
-          if (res.data.token) {
-            wx.setStorageSync('access-token', res.data.token)
-            _safecall(success, res.data)
-          } else {
-            _safecall(error, res.data)
-          }
-        }, err => {
-          _safecall(error, err)
-        })
-      }
-    },
-    fail: err => {
-      console.log('auth failed', err)
-      _safecall(error, err)
+  _post('/auth', { 'app': app_type }, res => {
+    console.log('auth', res.data)
+    if (res.data.token) {
+      wx.setStorageSync('access-token', res.data.token)
+      _safecall(success, res.data)
+    } else {
+      _safecall(error, res.data)
     }
+  }, err => {
+    _safecall(error, err)
   })
 }
 
-function login(app_type, tel, pwd, userInfo, success, error) {
+function login(app_type, tel, pwd, userInfo, success, error) { 
   wx.login({
     success: (res) => {
       wx.request({
@@ -104,8 +90,8 @@ function login(app_type, tel, pwd, userInfo, success, error) {
           'tel': tel,
           'pwd': pwd,
           'code': res.code,
-          'iv': userInfo.iv,
-          'encryptedData': userInfo.data,
+          'iv': userInfo.iv ? userInfo.iv : "",
+          'encryptedData': userInfo.encryptedData ? userInfo.encryptedData : "",
           'app': app_type,
         },
         success: res => {
@@ -168,7 +154,7 @@ function uploadAvatar(name, success) {
     count: 1, // 默认9
     sizeType: ['compressed'], // 可以指定是原图还是压缩图，默认二者都有
     sourceType: ['album', 'camera'], // 可以指定来源是相册还是相机，默认二者都有
-    success: function(res) {
+    success: function (res) {
       // 返回选定照片的本地文件路径列表，tempFilePath可以作为img标签的src属性显示图片
       var tempFilePaths = res.tempFilePaths
       _upload('avatar', {
@@ -213,6 +199,7 @@ function postBabyInfo(name, gender, school, class_name, height, weight, birthday
 function getUserInfo(e, success, error) {
   if (e.detail.userInfo) {
     app.globalData.userInfo = e.detail.userInfo
+    console.log('getUserInfo', e)
     wx.setStorage({
       key: 'userInfo',
       data: e.detail.userInfo,
@@ -220,7 +207,7 @@ function getUserInfo(e, success, error) {
     _page().setData({
       userInfo: e.detail.userInfo,
     }, () => {
-      _safecall(success, e.detail.userInfo)
+      _safecall(success, e.detail)
     })
   } else {
     _safecall(error, e)
