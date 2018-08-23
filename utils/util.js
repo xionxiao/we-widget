@@ -1,35 +1,59 @@
+function _page() {
+  var pages = getCurrentPages()
+  return pages[pages.length - 1]
+}
+
 function getDateTime() {
   const date = new Date();
   const DAY_OF_WEEK = ['日', '一', '二', '三', '四', '五', '六']
   const month = date.getMonth() + 1
   const day = date.getDate()
-  const dayOfWeek = date.getDay()
+  const day_of_week = date.getDay()
   const hour = date.getHours()
   const year = date.getFullYear()
-  var timeOfDay = "早"
+  var time_of_day = "早"
   if (hour > 0 && hour < 11)
-    timeOfDay = "早"
+    time_of_day = "早"
   if (hour >= 11 && hour < 14)
-    timeOfDay = "午"
+    time_of_day = "午"
   if (hour >= 14 && hour < 23)
-    timeOfDay = "晚"
+    time_of_day = "晚"
 
   return {
-    dayOfWeek: DAY_OF_WEEK[dayOfWeek],
-    timeOfDay: timeOfDay,
+    date: date,
+    dayOfWeek: DAY_OF_WEEK[day_of_week],
+    timeOfDay: time_of_day,
     isoDate: [year, month, day].join('-')
   }
 }
 
+function getCalendarDate(calendar) {
+  console.log(calendar.isoDate)
+  console.log(calendar)
+  const DAY_OF_WEEK = ['日', '一', '二', '三', '四', '五', '六']
+  var oldDate = new Date(calendar.date)
+  var day = oldDate.getDay()
+  day = day ? day : 7
+  var index = DAY_OF_WEEK.indexOf(calendar.dayOfWeek)
+  index = index ? index : 7
+  console.log('index', index, 'day', day)
+  day = oldDate.getDate() + index - day
+  var newDate = new Date(oldDate.getFullYear(), oldDate.getMonth(), day)
+  console.log(newDate)
+  var calendar_date = [newDate.getFullYear(), newDate.getMonth()+1, newDate.getDate()].join('-')
+  console.log(calendar_date)
+  return calendar_date
+}
+
 function onTapDayOfWeek(e, context = null) {
-  if (!context) context = this
+  if (!context) context = _page()
   context.setData({
     "calendar.dayOfWeek": e.currentTarget.id
   });
 }
 
 function onTapTimeOfDay(e, context = null) {
-  if (!context) context = this
+  if (!context) context = _page()
   context.setData({
     "calendar.timeOfDay": e.currentTarget.id
   });
@@ -64,6 +88,18 @@ function toast(title) {
   })
 }
 
+function showLoading(next) {
+  _page().setData({
+    showLoading: true
+  }, () => _safecall(next))
+}
+
+function cancelLoading(next) {
+  _page().setData({
+    showLoading: false
+  }, () => _safecall(next))
+}
+
 function isValidNumber(num, range_low, range_high) {
   if (isNaN(num)) return false
   var n = parseFloat(num)
@@ -89,11 +125,14 @@ function addFavorite(recipe) {
 
 module.exports = {
   initCalendar: getDateTime,
+  getCalendarDate: getCalendarDate,
   onTapDayOfWeek: onTapDayOfWeek,
   onTapTimeOfDay: onTapTimeOfDay,
   isValidNumber: isValidNumber,
   addHistory: addHistory,
   addFavorite: addFavorite,
+  showLoading: showLoading,
+  cancelLoading: cancelLoading,
   toast: toast,
   popup: popup,
 }

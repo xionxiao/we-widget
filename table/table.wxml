@@ -16,15 +16,20 @@
 
 <!-- 竖排 -->
 <template name="table-column">
-  <scroll-view scroll-x class="flex-center flex-row w-100" style="white-space:nowrap;">
+  <scroll-view scroll-x class="w-100" style="white-space:nowrap;">
     <block wx:for="{{content.cols}}" wx:for-item="col" wx:key="">
       <!-- 列宽参数: width min-width -->
-      <view class="flex-column" style="width:{{col.width?col.width:width}}; min-width:{{min_width?min_width:(100/content.cols.length-1)+'%'}}; display:inline-block;">
+      <view class="flex-column" style="width:{{col.width?col.width:width}}; min-width:{{min_width?min_width:(100/content.cols.length-1)+'%'}}; display:inline-block;vertical-align:top;">
         <view class="flex-center w-100 {{pr}}header_view">
           <view class="flex-center w-100 {{pr}}header_text {{pr}}{{index != content.cols.length-1 ? 'header_spliter' : '' }}">{{content.header[index]}}</view>
         </view>
-        <view wx:for="{{col.items}}" wx:for-item="cell" wx:key="" class="flex-center w-100 {{pr}}row {{pr}}{{index % 2 ? 'row_even' : 'row_odd'}} {{cell.style}}">
-          <navigator class="{{pr}}row-text" url="{{cell.url}}" style="height:{{row_height}};">{{cell.name}}</navigator>
+        <view wx:for="{{col.items}}" wx:for-item="cell" wx:key="" class="flex-center w-100 {{pr}}row {{pr}}{{index % 2 ? 'row_even' : 'row_odd'}} {{cell.style}}" style="height:{{row_height?row_height:'1.5rem'}};">
+          <!-- 输入框 -->
+          <input wx:if="{{cell.input}}" class="{{pr}}row-text" style="height:{{row_height?row_height:'1.2rem'}};" name="{{cell.input}}"></input>
+          <!-- 跳转 -->
+          <navigator wx:elif="{{cell.url}}" url="{{cell.url}}" class="{{pr}}row-text" style="height:{{row_height?row_height:'1.2rem'}};">{{cell.name}}</navigator>
+          <!-- 文本框 -->
+          <view wx:else class="{{pr}}row-text" style="height:{{row_height?row_height:'1.2rem'}};">{{cell.name}}</view>
         </view>
       </view>
     </block>
@@ -36,7 +41,7 @@
   <scroll-view scroll-x class="flex-center flex-row w-100" style="white-space:nowrap;">
     <!-- header -->
     <view class="flex-row w-100">
-    <view class="flex-row {{pr}}header_view {{pr}}header_text {{pr}}{{index != content.header.length-1 ? 'header_spliter' : '' }}" wx:for="{{content.header}}" wx:for-item='header' wx:key="" style="display:inline-block; width:{{content.width[index]}};">{{header}} </view>
+      <view class="flex-row {{pr}}header_view {{pr}}header_text {{pr}}{{index != content.header.length-1 ? 'header_spliter' : '' }}" wx:for="{{content.header}}" wx:for-item='header' wx:key="" style="display:inline-block; width:{{content.width[index]}};">{{header}} </view>
     </view>
     <!-- 行 -->
     <block wx:for="{{content.rows}}" wx:for-item="row" wx:key="">

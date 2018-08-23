@@ -1,7 +1,12 @@
 const app = getApp();
 
+function _page() {
+  var pages = getCurrentPages()
+  return pages[pages.length - 1]
+}
+
 function _safecall(func, param) {
-  typeof (func) == 'function' && func(param)
+  typeof(func) == 'function' && func(param)
 }
 
 function _get(uri, data, success) {
@@ -17,12 +22,26 @@ function _get(uri, data, success) {
   })
 }
 
-function _post(uri, payload, success) {
+function _post(uri, payload, success, fail) {
   wx.request({
     url: app.globalData.server + uri,
     method: 'POST',
     header: {
       'content-type': 'application/x-www-form-urlencoded;charset=utf-8',
+      'Authorization': 'token ' + wx.getStorageSync("access-token")
+    },
+    data: payload,
+    success: success,
+    fail: fail
+  })
+}
+
+function _post_json(uri, payload, success) {
+  wx.request({
+    url: app.globalData.server + uri,
+    method: 'POST',
+    header: {
+      'content-type': 'application/json;charset=utf-8',
       'Authorization': 'token ' + wx.getStorageSync("access-token")
     },
     data: payload,
@@ -44,23 +63,97 @@ function _upload(name, data, filePath, success) {
   })
 }
 
-function authorize(code, iv, data, success, app_type, tel, pwd) {
-  var payload = {
-    'code': code,
-    'iv': iv,
-    'encryptedData': data,
-    'app': app_type,
-    'tel': tel,
-    'pwd': pwd
-  }
-  wx.request({
-    url: app.globalData.server + '/auth',
-    method: 'POST',
-    header: {
-      'content-type': 'application/x-www-form-urlencoded;charset=utf-8',
+function authorize(app_type, success, error) {
+  wx.login({
+    success: (res) => {
+      if (res.code) {
+        var payload = {
+          'code': res.code,
+          'app': app_type
+        }
+        _post('/auth', payload, res => {
+          console.log('auth', res.data)
+          if (res.data.token) {
+            wx.setStorageSync('access-token', res.data.token)
+            _safecall(success, res.data)
+          } else {
+            _safecall(error, res.data)
+          }
+        }, err => {
+          _safecall(error, err)
+        })
+      }
     },
-    data: payload,
-    success: success
+    fail: err => {
+      console.log('auth failed', err)
+      _safecall(error, err)
+    }
+  })
+}
+
+function login(app_type, tel, pwd, userInfo, success, error) {
+  wx.login({
+    success: (res) => {
+      wx.request({
+        url: app.globalData.server + '/login',
+        method: 'POST',
+        header: {
+          'content-type': 'application/x-www-form-urlencoded;charset=utf-8',
+        },
+        data: {
+          'tel': tel,
+          'pwd': pwd,
+          'code': res.code,
+          'iv': userInfo.iv,
+          'encryptedData': userInfo.data,
+          'app': 'to_b',
+        },
+        success: res => {
+          console.log('login', res.data)
+          if (res.data.token) {
+            console.log('login success', res.data)
+            wx.setStorageSync('access-token', res.data.token)
+            _safecall(success, res.data)
+          } else {
+            console.log('login failed')
+            _safecall(error, res.data)
+          }
+        }
+      })
+    }
+  })
+}
+
+function register(app_type, tel, pwd, school, userInfo, success, error) {
+  wx.login({
+    success: (res) => {
+      wx.request({
+        url: app.globalData.server + '/register',
+        method: 'POST',
+        header: {
+          'content-type': 'application/x-www-form-urlencoded;charset=utf-8',
+        },
+        data: {
+          'tel': tel,
+          'pwd': pwd,
+          'school': school,
+          'code': res.code,
+          'iv': userInfo.iv,
+          'encryptedData': userInfo.data,
+          'app': app_type,
+        },
+        success: res => {
+          console.log('register', res.data)
+          if (res.data.error) {
+            console.log('register failed')
+            _safecall(error, res.data)
+          } else {
+            console.log('register success', res.data)
+            _safecall(success, res.data)
+          }
+        }
+      })
+    }
   })
 }
 
@@ -75,10 +168,12 @@ function uploadAvatar(name, success) {
     count: 1, // 默认9
     sizeType: ['compressed'], // 可以指定是原图还是压缩图，默认二者都有
     sourceType: ['album', 'camera'], // 可以指定来源是相册还是相机，默认二者都有
-    success: function (res) {
+    success: function(res) {
       // 返回选定照片的本地文件路径列表，tempFilePath可以作为img标签的src属性显示图片
       var tempFilePaths = res.tempFilePaths
-      _upload('avatar', { 'name': name }, tempFilePaths[0], success)
+      _upload('avatar', {
+        'name': name
+      }, tempFilePaths[0], success)
     }
   })
 }
@@ -91,7 +186,7 @@ function getBabyInfo(success, error) {
     } else {
       app.globalData.babies = res.data
       _safecall(success, res.data)
-    } 
+    }
   });
 }
 
@@ -114,8 +209,27 @@ function postBabyInfo(name, gender, school, height, weight, birthday, success, e
   })
 }
 
-function getMenu(name='', success, error) {
-  _get('/menu', {'name':name}, res => {
+function getUserInfo(e, success, error) {
+  if (e.detail.userInfo) {
+    app.globalData.userInfo = e.detail.userInfo
+    wx.setStorage({
+      key: 'userInfo',
+      data: e.detail.userInfo,
+    })
+    _page().setData({
+      userInfo: e.detail.userInfo,
+    }, () => {
+      _safecall(success, e.detail.userInfo)
+    })
+  } else {
+    _safecall(error, e)
+  }
+}
+
+function getMenu(name = '', success, error) {
+  _get('/menu', {
+    'name': name
+  }, res => {
     console.log('menu', res.data)
     if (res.data.error) {
       _safecall(error, res.data)
@@ -130,7 +244,9 @@ function getStep(name, success, error) {
   if (app.globalData.steps[name]) {
     _safecall(success, app.globalData.steps[name])
   } else {
-    _get('/recipe', {'name':name}, res => {
+    _get('/recipe', {
+      'name': name
+    }, res => {
       console.log('recipe', res.data)
       if (res.data.error) {
         _safecall(error, res.data)
@@ -143,8 +259,91 @@ function getStep(name, success, error) {
 }
 
 function getJointTable(payload, success, error) {
-  _post('/joint', payload, res => {
+  _get('/joint', payload, res => {
     console.log('joint', res.data)
+    if (res.data.error) {
+      _safecall(error, res.data)
+    } else {
+      _safecall(success, res.data)
+    }
+  })
+}
+
+function postJointTable(payload, success, error) {
+  _post_json('/joint', {
+    'data': payload
+  }, res => {
+    console.log('joint', res.data)
+    if (res.data.error) {
+      _safecall(error, res.data)
+    } else {
+      _safecall(success, res.data)
+    }
+  })
+}
+
+function getPurchaseList(date, success, error) {
+  _get('/purchase-list', {
+    'date': date
+  }, res => {
+    console.log('purchase-list', res.data)
+    if (res.data.error) {
+      _safecall(error, res.data)
+    } else {
+      _safecall(success, res.data)
+    }
+  })
+}
+
+function getStockList(date, success, error) {
+  _get('/stock-list', {
+    'date': date
+  }, res => {
+    if (res.data.error) {
+      _safecall(error, res.data)
+    } else {
+      _safecall(success, res.data)
+    }
+  })
+}
+
+function postStockList(data, success, error) {
+  _post_json('/stock-list', {
+    'data': data
+  }, res => {
+    if (res.data.error) {
+      _safecall(error, res.data)
+    } else {
+      _safecall(success, res.data)
+    }
+  })
+}
+
+function getClasses(success, error) {
+  _get('/class', {}, res => {
+    console.log('class', res.data)
+    if (res.data.error) {
+      _safecall(error, res.data)
+    } else {
+      _safecall(success, res.data)
+    }
+  })
+}
+
+function getStudents(success, error) {
+  _get('/student', {}, res => {
+    console.log('student', res.data)
+    if (res.data.error) {
+      _safecall(error, res.data)
+    } else {
+      _safecall(success, res.data)
+    }
+  })
+}
+
+function getKpi(date, success, error) {
+  _get('/kpi', {}, res => {
+    console.log('kpi', res.data)
     if (res.data.error) {
       _safecall(error, res.data)
     } else {
@@ -158,8 +357,18 @@ module.exports = {
   getVersion: getVersion,
   getBabyInfo: getBabyInfo,
   postBabyInfo: postBabyInfo,
+  getUserInfo: getUserInfo,
   getMenu: getMenu,
   getStep: getStep,
+  getKpi: getKpi,
   uploadAvatar: uploadAvatar,
-  getJointTable: getJointTable
+  getJointTable: getJointTable,
+  postJointTable: postJointTable,
+  getPurchaseList: getPurchaseList,
+  getStockList: getStockList,
+  postStockList: postStockList,
+  getClasses: getClasses,
+  getStudents: getStudents,
+  register: register,
+  login: login
 }
