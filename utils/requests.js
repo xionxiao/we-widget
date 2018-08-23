@@ -106,7 +106,7 @@ function login(app_type, tel, pwd, userInfo, success, error) {
           'code': res.code,
           'iv': userInfo.iv,
           'encryptedData': userInfo.data,
-          'app': 'to_b',
+          'app': app_type,
         },
         success: res => {
           console.log('login', res.data)
@@ -190,11 +190,12 @@ function getBabyInfo(success, error) {
   });
 }
 
-function postBabyInfo(name, gender, school, height, weight, birthday, success, error) {
+function postBabyInfo(name, gender, school, class_name, height, weight, birthday, success, error) {
   var data = {
     'name': name,
     'gender': gender,
     'school': school,
+    'class': class_name,
     'weight': weight,
     'height': height,
     'birthday': birthday,
