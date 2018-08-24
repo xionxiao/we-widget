@@ -125,7 +125,7 @@ function register(app_type, tel, pwd, school, userInfo, success, error) {
           'school': school,
           'code': res.code,
           'iv': userInfo.iv,
-          'encryptedData': userInfo.data,
+          'encryptedData': userInfo.encryptedData,
           'app': app_type,
         },
         success: res => {
@@ -199,7 +199,7 @@ function postBabyInfo(name, gender, school, class_name, height, weight, birthday
 function getUserInfo(e, success, error) {
   if (e.detail.userInfo) {
     app.globalData.userInfo = e.detail.userInfo
-    console.log('getUserInfo', e)
+    console.log('getUserInfo', e.detail)
     wx.setStorage({
       key: 'userInfo',
       data: e.detail.userInfo,
