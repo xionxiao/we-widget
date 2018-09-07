@@ -116,11 +116,19 @@ function _push(list, recipe) {
 function addHistory(recipe) {
   var history = getApp().globalData.history
   _push(history, recipe)
+  wx.setStorage({
+    key: 'history',
+    data: history,
+  })
 }
 
 function addFavorite(recipe) {
   var fav = getApp().globalData.favorite
   _push(fav, recipe)
+  wx.setStorage({
+    key: 'favorite',
+    data: fav,
+  })
 }
 
 module.exports = {
