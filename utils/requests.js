@@ -90,8 +90,8 @@ function login(app_type, tel, pwd, userInfo, success, error) {
           'tel': tel,
           'pwd': pwd,
           'code': res.code,
-          'iv': userInfo.iv ? userInfo.iv : "",
-          'encryptedData': userInfo.encryptedData ? userInfo.encryptedData : "",
+          'iv': userInfo.iv,
+          'encryptedData': userInfo.encryptedData,
           'app': app_type,
         },
         success: res => {
@@ -125,7 +125,7 @@ function register(app_type, tel, pwd, school, userInfo, success, error) {
           'school': school,
           'code': res.code,
           'iv': userInfo.iv,
-          'encryptedData': userInfo.data,
+          'encryptedData': userInfo.encryptedData,
           'app': app_type,
         },
         success: res => {
