@@ -77,7 +77,7 @@ function authorize(app_type, success, error) {
   })
 }
 
-function login(app_type, tel, pwd, userInfo, success, error) { 
+function login(app_type, tel, pwd, userInfo, success, error) {
   wx.login({
     success: (res) => {
       wx.request({
@@ -90,12 +90,11 @@ function login(app_type, tel, pwd, userInfo, success, error) {
           'tel': tel,
           'pwd': pwd,
           'code': res.code,
-          'iv': userInfo.iv ? userInfo.iv : "",
-          'encryptedData': userInfo.encryptedData ? userInfo.encryptedData : "",
+          'iv': userInfo.iv,
+          'encryptedData': userInfo.encryptedData,
           'app': app_type,
         },
         success: res => {
-          console.log('login', res.data)
           if (res.data.token) {
             console.log('login success', res.data)
             wx.setStorageSync('access-token', res.data.token)
@@ -307,9 +306,20 @@ function postStockList(data, success, error) {
   })
 }
 
-function getClasses(success, error) {
-  _get('/class', {}, res => {
-    console.log('class', res.data)
+function getSchools(success, error) {
+  _get('/school', {}, res => {
+    console.log('school', res.data)
+    if (res.data.error) {
+      _safecall(error, res.data)
+    } else {
+      _safecall(success, res.data)
+    }
+  })
+}
+
+function getClasses(school, success, error) {
+  _get('/classes', { 'school': school ? school : "" }, res => {
+    console.log('classes', res.data)
     if (res.data.error) {
       _safecall(error, res.data)
     } else {
@@ -340,6 +350,36 @@ function getKpi(date, success, error) {
   })
 }
 
+function downloadImage(url, success, error) {
+  console.log('download image:', url)
+  wx.downloadFile({
+    url: app.globalData.server + '/' + url,
+    success: function (res) {
+      console.log(res)
+      if (res.statusCode == 200) {
+        var filePath = res.tempFilePath
+        console.log('saveing image', url)
+        wx.saveImageToPhotosAlbum({
+          filePath: res.tempFilePath,
+          success: function (res) {
+            res.tempFilePath = filePath
+            console.log('image saved')
+            _safecall(success, res)
+          },
+          error: function (err) {
+            _safecall(error, err)
+          }
+        })
+      } else {
+        _safecall(error, res)
+      }
+    },
+    error: function (err) {
+      _safecall(error, err)
+    }
+  })
+}
+
 module.exports = {
   authorize: authorize,
   getVersion: getVersion,
@@ -352,9 +392,11 @@ module.exports = {
   uploadAvatar: uploadAvatar,
   getJointTable: getJointTable,
   postJointTable: postJointTable,
+  downloadImage: downloadImage,
   getPurchaseList: getPurchaseList,
   getStockList: getStockList,
   postStockList: postStockList,
+  getSchools: getSchools,
   getClasses: getClasses,
   getStudents: getStudents,
   register: register,
