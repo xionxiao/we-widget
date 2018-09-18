@@ -131,6 +131,22 @@ function addFavorite(recipe) {
   })
 }
 
+function share2CAppMessage() {
+  return {
+    titile: '比宝儿童营养小程序',
+    path: 'pages/login/login',
+    imageUrl: 'https://www.bibofood.com/media/uploads/share_2c.jpeg'
+  }
+}
+
+function share2BAppMessage() {
+  return {
+    titile: '比宝健康平台',
+    path: 'pages/login/login',
+    imageUrl: 'https://www.bibofood.com/media/uploads/share_2c.jpeg'
+  }
+}
+
 module.exports = {
   initCalendar: getDateTime,
   getCalendarDate: getCalendarDate,
@@ -143,4 +159,6 @@ module.exports = {
   cancelLoading: cancelLoading,
   toast: toast,
   popup: popup,
+  share2CAppMessage: share2CAppMessage,
+  share2BAppMessage: share2BAppMessage
 }

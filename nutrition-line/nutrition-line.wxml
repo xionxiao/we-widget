@@ -1,17 +1,20 @@
 <template name="nutrition-line">
-  <view class="flex-row w-100" style="align-items:flex-end; width:90%;">
-
-      <view class="flex-row flex-between" style="align-items:flex-end; width:300rpx;">
+  <view class="flex-center flex-between w-100">
+    <view class="flex-center flex-between" style='width:265rpx;'>
+      <view class="flex-center flex-between">
         <!-- 名称 -->
-        <text style='font-size:32rpx;color:#9b9b9b;'>{{item.name}}</text>
-        <!-- 数量 -->
-        <text style='color:#048645;font-size:64rpx;'>{{take?item.take:item.need}}</text>
+        <text style='font-size:32rpx;max-width:160rpx;color:#9b9b9b;'>{{item.name}}</text>
       </view>
+      <!-- 数量 -->
+      <view class="flex-center flex-start">
+        <text class="flex-start" style='color:#048645;font-size:64rpx;'>{{take?item.take:item.need}}</text>
+      </view>
+    </view>
 
-      <!-- 单位 -->
-      <view class="flex" style='width:130rpx; justify-content:flex-end'>
-        <text style='font-size:32rpx;text-align:right;color:#9b9b9b;'>{{item.unit}}</text>
-      </view>
+    <!-- 单位 -->
+    <view class="flex-center flex-end" style='width:60rpx;'>
+      <text style='font-size:32rpx;text-align:right;color:#9b9b9b;'>{{item.unit}}</text>
+    </view>
 
   </view>
 </template>

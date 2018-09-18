@@ -148,7 +148,7 @@ function getVersion() {
   });
 }
 
-function uploadAvatar(name, success) {
+function uploadAvatar(name, success, error) {
   wx.chooseImage({
     count: 1, // 默认9
     sizeType: ['compressed'], // 可以指定是原图还是压缩图，默认二者都有
@@ -156,9 +156,16 @@ function uploadAvatar(name, success) {
     success: function (res) {
       // 返回选定照片的本地文件路径列表，tempFilePath可以作为img标签的src属性显示图片
       var tempFilePaths = res.tempFilePaths
-      _upload('avatar', {
-        'name': name
-      }, tempFilePaths[0], success)
+      var tempFileSize = res.tempFiles[0].size;
+      console.log(tempFileSize)
+      if (tempFileSize < 600 * 1024) {
+        _upload('avatar', {
+          'name': name
+        }, tempFilePaths[0], success)
+      } else {
+        console.log("avatar size is bigger than 600K")
+        _safecall(error)
+      }
     }
   })
 }

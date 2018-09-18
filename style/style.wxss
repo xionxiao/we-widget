@@ -33,6 +33,11 @@
   justify-content: flex-start;
 }
 
+.flex-end {
+  display: flex;
+  justify-content: flex-end;
+}
+
 .flex-between {
   display: flex;
   justify-content: space-between;
@@ -53,6 +58,26 @@
 
 .pr-1 {
   padding-right: 1rem;
+}
+
+.p20 {
+  padding: 20rpx;
+}
+
+.pl20 {
+  padding-left: 20rpx;
+}
+
+.pr20 {
+  padding-right: 20rpx;
+}
+
+.pt20 {
+  padding-top: 20rpx;
+}
+
+.pb20 {
+  padding-bottom: 20rpx;
 }
 
 .m-1 {
