@@ -15,6 +15,5 @@
     <view class="flex-center flex-end" style='width:60rpx;'>
       <text style='font-size:32rpx;text-align:right;color:#9b9b9b;'>{{item.unit}}</text>
     </view>
-
   </view>
 </template>

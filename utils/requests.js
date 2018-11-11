@@ -220,9 +220,10 @@ function getUserInfo(e, success, error) {
   }
 }
 
-function getMenu(name = '', success, error) {
+function getMenu(name, success, error) {
+  console.log('getMneu', name)
   _get('/menu', {
-    'name': name
+    'baby': name
   }, res => {
     console.log('menu', res.data)
     if (res.data.error) {
