@@ -1,3 +1,9 @@
+/*
+ * request.js
+ * Copyright 2018-2020 Allen Xiao. All Rights Reserved
+ * Licensed under MIT (https://github.com/xionxiao/we-widget/LICENSE)
+ */
+
 class Request {
   static DEBUG_REQUEST = false
   static config = {}
