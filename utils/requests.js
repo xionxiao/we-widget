@@ -1,9 +1,3 @@
-/*
- * request.js
- * Copyright 2018-2020 Allen Xiao. All Rights Reserved
- * Licensed under MIT (https://github.com/xionxiao/we-widget/LICENSE)
- */
-
 class Request {
   static DEBUG_REQUEST = false
   static config = {}
@@ -60,20 +54,20 @@ class Request {
       if (data) {
         this.config['data'] = data
       }
+      Request.DEBUG_REQUEST && console.log(method, 'config', this.config)
       this.config.success = (res) => {
-        if (res.statusCode != 200 || res.data.error) {
-          Request.DEBUG_REQUEST && console.log(method, this.config.url, data, 'failed', res)
+        if (res.statusCode >= 400 || res.data.error) {
+          Request.DEBUG_REQUEST && console.log(method, this.config.url, 'failed', data, res)
           reject(res)
         } else {
-          Request.DEBUG_REQUEST && console.log(method, this.config.url, data, 'success', res)
+          Request.DEBUG_REQUEST && console.log(method, this.config.url, 'success', data, res)
           resolve(res.data)
         }
       }
       this.config.fail = err => {
-        Request.DEBUG_REQUEST && console.log(method, this.config.url, data, 'failed', err)
+        Request.DEBUG_REQUEST && console.log(method, this.config.url, 'failed', data, err)
         reject(err)
       }
-      Request.DEBUG_REQUEST && console.log(method, url, 'config', this.config)
       this.task = wx.request(this.config)
     })
     return promise
@@ -91,11 +85,15 @@ class Request {
     return this.request("PUT", url, data)
   }
 
+  patch(url, data) {
+    return this.request("PATCH", url, data)
+  }
+
   delete(url) {
     return this.request("DELETE", url)
   }
 }
 
 module.exports = {
-  Request: Request,
+  Request: Request
 }
