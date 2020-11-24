@@ -1,5 +1,0 @@
-<template name="button">
-  <view class='w-100 flex-row flex-center'>
-    <button class="bg-primary text-white f-28 bold" form-type="{{formtype}}" bindtap="{{bindtap}}" style="width:{{width?width:'400rpx'}}; margin:30rpx; border-radius:500px; padding:0 88rpx 0 88rpx;">{{text}}</button>
-  </view>
-</template>
